@@ -2,6 +2,12 @@ streamlit
 pandas
 numpy
 matplotlib
+<<<<<<< HEAD
 openpyxl
 joblib
 scikit-learn==1.5.2
+=======
+scikit-learn==1.5.2
+openpyxl
+joblib
+>>>>>>> 195deb0a37484ae6a3f4bb81244417e9bb5a0779
