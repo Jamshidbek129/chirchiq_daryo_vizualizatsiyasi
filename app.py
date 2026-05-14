@@ -5,7 +5,7 @@ st.set_page_config(page_title="Chirchiq suv sifati modeli", layout="wide")
 
 st.title("Chirchiq daryosi suv sifati bashorati va 2D dispersion modeli")
 
-water_model = joblib.load("water_quality_dispersion_model.pkl")
+water_model = joblib.load("water_models.pkl")
 
 future_year = st.sidebar.number_input("Yilni kiriting", min_value=2026, max_value=2050, value=2030)
 
