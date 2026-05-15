@@ -1,9 +1,9 @@
 import streamlit as st
-import joblib
-# import pandas as pd
-# import numpy as np
-# import matplotlib.pyplot as plt
-# from matplotlib.colors import LinearSegmentedColormap
+# import joblib
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.colors import LinearSegmentedColormap
 
 # st.set_page_config(page_title="Chirchiq suv sifati modeli", layout="wide")
 
