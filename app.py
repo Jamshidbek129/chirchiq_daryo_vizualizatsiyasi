@@ -1,7 +1,5 @@
 import streamlit as st
-
-st.write("App ishladi")
-# import joblib
+import joblib
 # import pandas as pd
 # import numpy as np
 # import matplotlib.pyplot as plt
@@ -154,3 +152,4 @@ st.write("App ishladi")
 #         ax.grid(True)
 
 #         st.pyplot(fig)
+st.write("App ishladi")
