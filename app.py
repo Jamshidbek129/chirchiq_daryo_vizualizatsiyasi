@@ -1,154 +1,156 @@
 import streamlit as st
-from sklearn.externals import joblib
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-from matplotlib.colors import LinearSegmentedColormap
 
-st.set_page_config(page_title="Chirchiq suv sifati modeli", layout="wide")
+st.write("App ishladi")
+# import joblib
+# import pandas as pd
+# import numpy as np
+# import matplotlib.pyplot as plt
+# from matplotlib.colors import LinearSegmentedColormap
 
-st.title("Chirchiq daryosi suv sifati bashorati va 2D dispersion modeli")
+# st.set_page_config(page_title="Chirchiq suv sifati modeli", layout="wide")
 
-# Fayllarni o‘qish
-river_params_df = pd.read_excel(
-    "Chirchiq_gidro_uzel_uchun_mothly_discharge,_kengik,_eni,_chuqurligi.xlsx"
-)
+# st.title("Chirchiq daryosi suv sifati bashorati va 2D dispersion modeli")
 
-# Modellarni yuklash
-models = joblib.load("water_models.pkl")
+# # Fayllarni o‘qish
+# river_params_df = pd.read_excel(
+#     "Chirchiq_gidro_uzel_uchun_mothly_discharge,_kengik,_eni,_chuqurligi.xlsx"
+# )
 
-parameters = ['Temp', 'COD', 'BOD', 'TSS', 'P', 'NH4', 'NO2', 'NO3']
+# # Modellarni yuklash
+# models = joblib.load("water_models.pkl")
 
-month_num_map = {
-    'January': 1,
-    'February': 2,
-    'March': 3,
-    'April': 4,
-    'May': 5,
-    'June': 6,
-    'July': 7,
-    'August': 8,
-    'September': 9,
-    'October': 10,
-    'November': 11,
-    'December': 12
-}
+# parameters = ['Temp', 'COD', 'BOD', 'TSS', 'P', 'NH4', 'NO2', 'NO3']
 
-decay_rates = {
-    'COD': 5.0e-5,
-    'BOD': 1.0e-4,
-    'NH4': 5.0e-5,
-    'NO2': 5.0e-5,
-    'NO3': 0.0,
-    'P': 0.0,
-    'TSS': 0.0,
-    'Temp': 0.0
-}
+# month_num_map = {
+#     'January': 1,
+#     'February': 2,
+#     'March': 3,
+#     'April': 4,
+#     'May': 5,
+#     'June': 6,
+#     'July': 7,
+#     'August': 8,
+#     'September': 9,
+#     'October': 10,
+#     'November': 11,
+#     'December': 12
+# }
 
-colors = ["#010048", "#056CF2", "#08F7FE", "#AEFD9B", "#F9F871"]
-custom_cmap = LinearSegmentedColormap.from_list("custom_cmap", colors)
+# decay_rates = {
+#     'COD': 5.0e-5,
+#     'BOD': 1.0e-4,
+#     'NH4': 5.0e-5,
+#     'NO2': 5.0e-5,
+#     'NO3': 0.0,
+#     'P': 0.0,
+#     'TSS': 0.0,
+#     'Temp': 0.0
+# }
 
-river_params_df['Months'] = river_params_df['Months'].astype(str).str.strip()
-river_params_df['Month_num'] = river_params_df['Months'].map(month_num_map)
+# colors = ["#010048", "#056CF2", "#08F7FE", "#AEFD9B", "#F9F871"]
+# custom_cmap = LinearSegmentedColormap.from_list("custom_cmap", colors)
 
-# Sidebar
-st.sidebar.header("Bashorat sozlamalari")
+# river_params_df['Months'] = river_params_df['Months'].astype(str).str.strip()
+# river_params_df['Month_num'] = river_params_df['Months'].map(month_num_map)
 
-future_year = st.sidebar.number_input(
-    "Yilni kiriting",
-    min_value=2026,
-    max_value=2050,
-    value=2030
-)
+# # Sidebar
+# st.sidebar.header("Bashorat sozlamalari")
 
-future_month = st.sidebar.selectbox(
-    "Oyni tanlang",
-    list(month_num_map.keys()),
-    index=4
-)
+# future_year = st.sidebar.number_input(
+#     "Yilni kiriting",
+#     min_value=2026,
+#     max_value=2050,
+#     value=2030
+# )
 
-param = st.sidebar.selectbox(
-    "Parametrni tanlang",
-    parameters,
-    index=1
-)
+# future_month = st.sidebar.selectbox(
+#     "Oyni tanlang",
+#     list(month_num_map.keys()),
+#     index=4
+# )
 
-# Bashorat
-if st.sidebar.button("Bashorat qilish"):
+# param = st.sidebar.selectbox(
+#     "Parametrni tanlang",
+#     parameters,
+#     index=1
+# )
 
-    future_month_num = month_num_map[future_month]
+# # Bashorat
+# if st.sidebar.button("Bashorat qilish"):
 
-    model = models[param]
+#     future_month_num = month_num_map[future_month]
 
-    future_input = pd.DataFrame(
-        [[future_year, future_month_num]],
-        columns=['Year', 'Month_num']
-    )
+#     model = models[param]
 
-    predicted_value = model.predict(future_input)[0]
+#     future_input = pd.DataFrame(
+#         [[future_year, future_month_num]],
+#         columns=['Year', 'Month_num']
+#     )
 
-    river_row = river_params_df[
-        river_params_df['Month_num'] == future_month_num
-    ]
+#     predicted_value = model.predict(future_input)[0]
 
-    if river_row.empty:
-        st.error("Bu oy uchun gidrologik ma'lumot topilmadi.")
+#     river_row = river_params_df[
+#         river_params_df['Month_num'] == future_month_num
+#     ]
 
-    else:
-        river_row = river_row.iloc[0]
+#     if river_row.empty:
+#         st.error("Bu oy uchun gidrologik ma'lumot topilmadi.")
 
-        U = river_row['Velocity (m/s)']
-        depth = river_row['Depth(m)']
-        width = river_row['Width(m)']
+#     else:
+#         river_row = river_row.iloc[0]
 
-        x = np.linspace(1, 20000, 500)
-        y = np.linspace(-width / 2, width / 2, 50)
+#         U = river_row['Velocity (m/s)']
+#         depth = river_row['Depth(m)']
+#         width = river_row['Width(m)']
 
-        X_grid, Y_grid = np.meshgrid(x, y)
+#         x = np.linspace(1, 20000, 500)
+#         y = np.linspace(-width / 2, width / 2, 50)
 
-        D_L = 0.6 * U * depth
-        D_T = 0.1 * D_L
+#         X_grid, Y_grid = np.meshgrid(x, y)
 
-        decay_rate = decay_rates[param]
+#         D_L = 0.6 * U * depth
+#         D_T = 0.1 * D_L
 
-        C = predicted_value * np.exp(
-            -decay_rate * X_grid / U
-        ) * np.exp(
-            -Y_grid**2 / (4 * D_T * X_grid)
-        )
+#         decay_rate = decay_rates[param]
 
-        st.success(
-            f"Bashorat qilingan downstream {param}: {predicted_value:.4f}"
-        )
+#         C = predicted_value * np.exp(
+#             -decay_rate * X_grid / U
+#         ) * np.exp(
+#             -Y_grid**2 / (4 * D_T * X_grid)
+#         )
 
-        fig, ax = plt.subplots(figsize=(12, 6))
+#         st.success(
+#             f"Bashorat qilingan downstream {param}: {predicted_value:.4f}"
+#         )
 
-        contour = ax.contourf(
-            X_grid / 1000,
-            Y_grid,
-            C,
-            levels=25,
-            cmap=custom_cmap
-        )
+#         fig, ax = plt.subplots(figsize=(12, 6))
 
-        fig.colorbar(contour, ax=ax, label=param)
+#         contour = ax.contourf(
+#             X_grid / 1000,
+#             Y_grid,
+#             C,
+#             levels=25,
+#             cmap=custom_cmap
+#         )
 
-        ax.set_title(
-            f"{future_year}-yil | {future_month} | {param} dispersion modeli"
-        )
+#         fig.colorbar(contour, ax=ax, label=param)
 
-        ax.set_xlabel("Masofa (km)")
-        ax.set_ylabel("Daryo kengligi (m)")
+#         ax.set_title(
+#             f"{future_year}-yil | {future_month} | {param} dispersion modeli"
+#         )
 
-        ax.scatter(
-            0,
-            0,
-            color="red",
-            marker="*",
-            label="Boshlang‘ich nuqta"
-        )
+#         ax.set_xlabel("Masofa (km)")
+#         ax.set_ylabel("Daryo kengligi (m)")
 
-        ax.legend()
-        ax.grid(True)
+#         ax.scatter(
+#             0,
+#             0,
+#             color="red",
+#             marker="*",
+#             label="Boshlang‘ich nuqta"
+#         )
 
-        st.pyplot(fig)
+#         ax.legend()
+#         ax.grid(True)
+
+#         st.pyplot(fig)
