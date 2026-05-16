@@ -4,4 +4,4 @@ numpy
 matplotlib
 joblib
 openpyxl
-scikit-learn
+scikit-learn==1.2.2
