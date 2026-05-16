@@ -46,8 +46,40 @@ decay_rates = {
 colors = ["#010048", "#056CF2", "#08F7FE", "#AEFD9B", "#F9F871"]
 custom_cmap = LinearSegmentedColormap.from_list("custom_cmap", colors)
 
-river_params_df['Months'] = river_params_df['Months'].astype(str).str.strip()
-river_params_df['Month_num'] = river_params_df['Months'].map(month_num_map)
+river_params_df['Months'] = (
+    river_params_df['Months']
+    .astype(str)
+    .str.strip()
+    .str.lower()
+)
+
+month_map_excel = {
+    'jan': 1,
+    'feb': 2,
+    'mar': 3,
+    'apr': 4,
+    'may': 5,
+    'jun': 6,
+    'jul': 7,
+    'aug': 8,
+    'sep': 9,
+    'oct': 10,
+    'nov': 11,
+    'dec': 12,
+    'january': 1,
+    'february': 2,
+    'march': 3,
+    'april': 4,
+    'june': 6,
+    'july': 7,
+    'august': 8,
+    'september': 9,
+    'october': 10,
+    'november': 11,
+    'december': 12
+}
+
+river_params_df['Month_num'] = river_params_df['Months'].map(month_map_excel)
 
 df_down['Month'] = df_down['Month'].astype(str).str.strip()
 df_down['Month_num'] = df_down['Month'].map(month_num_map)
