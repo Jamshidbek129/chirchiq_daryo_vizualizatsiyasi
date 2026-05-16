@@ -1,21 +1,19 @@
 import streamlit as st
-import joblib
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.colors import LinearSegmentedColormap
+from sklearn.ensemble import RandomForestRegressor
 
 st.set_page_config(page_title="Chirchiq suv sifati modeli", layout="wide")
 
 st.title("Chirchiq daryosi suv sifati bashorati va 2D dispersion modeli")
 
-# Fayllarni o‘qish
 river_params_df = pd.read_excel(
     "Chirchiq_gidro_uzel_uchun_mothly_discharge,_kengik,_eni,_chuqurligi.xlsx"
 )
 
-# Modellarni yuklash
-models = joblib.load("water_models.pkl")
+df_down = pd.read_csv("downstream.csv")
 
 parameters = ['Temp', 'COD', 'BOD', 'TSS', 'P', 'NH4', 'NO2', 'NO3']
 
@@ -51,7 +49,33 @@ custom_cmap = LinearSegmentedColormap.from_list("custom_cmap", colors)
 river_params_df['Months'] = river_params_df['Months'].astype(str).str.strip()
 river_params_df['Month_num'] = river_params_df['Months'].map(month_num_map)
 
-# Sidebar
+df_down['Month'] = df_down['Month'].astype(str).str.strip()
+df_down['Month_num'] = df_down['Month'].map(month_num_map)
+
+
+@st.cache_resource
+def train_models(df):
+    models = {}
+
+    for p in parameters:
+        data = df.dropna(subset=['Year', 'Month_num', p]).copy()
+
+        X = data[['Year', 'Month_num']]
+        y = data[p]
+
+        model = RandomForestRegressor(
+            n_estimators=300,
+            random_state=42
+        )
+
+        model.fit(X, y)
+        models[p] = model
+
+    return models
+
+
+models = train_models(df_down)
+
 st.sidebar.header("Bashorat sozlamalari")
 
 future_year = st.sidebar.number_input(
@@ -73,7 +97,6 @@ param = st.sidebar.selectbox(
     index=1
 )
 
-# Bashorat
 if st.sidebar.button("Bashorat qilish"):
 
     future_month_num = month_num_map[future_month]
