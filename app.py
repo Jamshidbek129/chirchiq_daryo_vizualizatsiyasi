@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.colors import LinearSegmentedColormap
-from sklearn.ensemble import RandomForestRegressor
+from sklearn.linear_model import LinearRegression
 
 st.set_page_config(page_title="Chirchiq suv sifati modeli", layout="wide")
 
@@ -92,15 +92,15 @@ def train_models(df):
     for p in parameters:
         data = df.dropna(subset=['Year', 'Month_num', p]).copy()
 
-        X = data[['Year', 'Month_num']]
+        data['Month_sin'] = np.sin(2 * np.pi * data['Month_num'] / 12)
+        data['Month_cos'] = np.cos(2 * np.pi * data['Month_num'] / 12)
+
+        X = data[['Year', 'Month_num', 'Month_sin', 'Month_cos']]
         y = data[p]
 
-        model = RandomForestRegressor(
-            n_estimators=300,
-            random_state=42
-        )
-
+        model = LinearRegression()
         model.fit(X, y)
+
         models[p] = model
 
     return models
