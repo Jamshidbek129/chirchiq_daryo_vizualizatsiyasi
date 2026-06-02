@@ -172,9 +172,9 @@ if st.sidebar.button("Bashorat qilish"):
             -Y_grid**2 / (4 * D_T * X_grid)
         )
 
-        st.success(
-            f"Bashorat qilingan downstream {param}: {predicted_value:.4f}"
-        )
+        # st.success(
+        #     f"Bashorat qilingan downstream {param}: {predicted_value:.4f}"
+        # )
 
         fig, ax = plt.subplots(figsize=(12, 6))
 
